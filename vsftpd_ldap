@@ -1,0 +1,8 @@
+#%PAM-1.0
+auth       sufficient pam_ldap.so
+auth	required	pam_userdb.so	db=/etc/vsftpd/virtual_users
+account    sufficient pam_ldap.so
+account	required	pam_userdb.so	db=/etc/vsftpd/virtual_users
+password   sufficient pam_ldap.so
+session    sufficient pam_ldap.so
+session	 required	pam_loginuid.so

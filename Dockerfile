@@ -12,6 +12,7 @@ LABEL Description="vsftpd Docker image based on Centos 7. Supports passive mode 
 RUN yum -y update && yum clean all
 RUN yum install -y \
 	vsftpd \
+	pam_ldap \
 	db4-utils \
 	db4 && yum clean all
 
@@ -23,8 +24,8 @@ ENV FTP_PASS **Random**
 ENV PASV_ADDRESS **IPv4**
 ENV PASV_ADDR_RESOLVE NO
 ENV PASV_ENABLE YES
-ENV PASV_MIN_PORT 21100
-ENV PASV_MAX_PORT 21110
+ENV PASV_MIN_PORT 61100
+ENV PASV_MAX_PORT 61110
 ENV XFERLOG_STD_FORMAT NO
 ENV LOG_STDOUT **Boolean**
 ENV FILE_OPEN_MODE 0666
@@ -32,7 +33,12 @@ ENV LOCAL_UMASK 077
 
 COPY vsftpd.conf /etc/vsftpd/
 COPY vsftpd_virtual /etc/pam.d/
+COPY vsftpd_ldap /etc/pam.d/
 COPY run-vsftpd.sh /usr/sbin/
+
+COPY pam_ldap.conf /etc/
+COPY nsswitch.conf /etc/
+COPY nslcd.conf /etc/
 
 RUN chmod +x /usr/sbin/run-vsftpd.sh
 RUN mkdir -p /home/vsftpd/
@@ -41,6 +47,6 @@ RUN chown -R ftp:ftp /home/vsftpd/
 VOLUME /home/vsftpd
 VOLUME /var/log/vsftpd
 
-EXPOSE 20 21
+EXPOSE 12020 12121
 
 CMD ["/usr/sbin/run-vsftpd.sh"]

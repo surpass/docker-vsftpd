@@ -63,4 +63,6 @@ else
 fi
 
 # Run vsftpd:
+/usr/sbin/nslcd &
+
 &>/dev/null /usr/sbin/vsftpd /etc/vsftpd/vsftpd.conf
